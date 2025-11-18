@@ -1,0 +1,606 @@
+{
+	"info": {
+		"_postman_id": "mern-project-api-collection",
+		"name": "MERN Project API",
+		"description": "Complete API collection for MERN Stack Social Media Application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response has message\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('message');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Register a new user account"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has token\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('token');",
+									"    ",
+									"    // Save token to collection variable",
+									"    if (jsonData.token) {",
+									"        pm.collectionVariables.set('token', jsonData.token);",
+									"    }",
+									"});",
+									"",
+									"pm.test(\"Response has user data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('user');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login and get authentication token"
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot Password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has resetUrl\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('resetUrl');",
+									"    ",
+									"    // Extract token from resetUrl",
+									"    if (jsonData.resetUrl) {",
+									"        var urlParts = jsonData.resetUrl.split('/');",
+									"        var resetToken = urlParts[urlParts.length - 1];",
+									"        pm.collectionVariables.set('resetToken', resetToken);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"test@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/forgot-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"forgot-password"
+							]
+						},
+						"description": "Request password reset token"
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"password\": \"newpassword123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/reset-password/:token",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"reset-password",
+								":token"
+							],
+							"variable": [
+								{
+									"key": "token",
+									"value": "{{resetToken}}",
+									"description": "Reset token from forgot-password response"
+								}
+							]
+						},
+						"description": "Reset password using token from forgot-password"
+					},
+					"response": []
+				}
+			],
+			"description": "Authentication endpoints"
+		},
+		{
+			"name": "Posts",
+			"item": [
+				{
+					"name": "Create Post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response has post ID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('_id');",
+									"    ",
+									"    // Save post ID for other requests",
+									"    if (jsonData._id) {",
+									"        pm.collectionVariables.set('postId', jsonData._id);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"This is my first post!\",\n  \"image\": \"https://example.com/image.jpg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/posts",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"posts"
+							]
+						},
+						"description": "Create a new post (requires authentication)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Posts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is an array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/posts",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"posts"
+							]
+						},
+						"description": "Get all posts (no authentication required)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Post",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/posts/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"posts",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{postId}}",
+									"description": "Post ID from create post response"
+								}
+							]
+						},
+						"description": "Get a single post by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"Updated post content\",\n  \"image\": \"https://example.com/new-image.jpg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/posts/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"posts",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{postId}}",
+									"description": "Post ID"
+								}
+							]
+						},
+						"description": "Update a post (requires authentication and ownership)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/posts/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"posts",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{postId}}",
+									"description": "Post ID"
+								}
+							]
+						},
+						"description": "Delete a post (requires authentication and ownership)"
+					},
+					"response": []
+				},
+				{
+					"name": "Toggle Like",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has likesCount\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('likesCount');",
+									"    pm.expect(jsonData).to.have.property('liked');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/posts/:id/like",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"posts",
+								":id",
+								"like"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{postId}}",
+									"description": "Post ID"
+								}
+							]
+						},
+						"description": "Toggle like on a post (requires authentication)"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response has comment text\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('text');",
+									"    pm.expect(jsonData).to.have.property('user');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"text\": \"This is a great post!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/posts/:id/comment",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"posts",
+								":id",
+								"comment"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{postId}}",
+									"description": "Post ID"
+								}
+							]
+						},
+						"description": "Add a comment to a post (requires authentication)"
+					},
+					"response": []
+				}
+			],
+			"description": "Post management endpoints"
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "postId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "resetToken",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+
