@@ -14,8 +14,8 @@ resetPasswordExpires: Date
 userSchema.methods.createPasswordResetToken = function() {
 const token = crypto.randomBytes(32).toString('hex');
 this.resetPasswordToken = crypto.createHash('sha256').update(token).digest('hex');
-this.resetPasswordExpires = Date.now() + 1000 * 60 * 60; // 1 hour
-return token; // raw token returned to send by email
+this.resetPasswordExpires = Date.now() + 1000 * 60 * 60;
+return token;
 };
 
 
