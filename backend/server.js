@@ -9,6 +9,7 @@ dotenv.config();
 connectDB();
 
 const app = express();
+app.set('trust proxy', true);
 
 const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
