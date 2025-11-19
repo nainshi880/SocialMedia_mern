@@ -1,8 +1,10 @@
 const Post = require('../models/Post');
 
 const buildFileUrl = (req, filename) => {
-  const host = req.get('host');
-  return `${req.protocol}://${host}/uploads/${filename}`;
+  const forwardedHost = req.headers['x-forwarded-host'];
+  const host = forwardedHost || req.get('host');
+  const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+  return `${protocol}://${host}/uploads/${filename}`;
 };
 
 const resolveMedia = (req) => {

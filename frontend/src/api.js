@@ -9,7 +9,7 @@ export const request = async (path, { method = 'GET', body, token } = {}) => {
   }
 
   if (token) headers.Authorization = `Bearer ${token}`;
-
+console.log(`${API_URL}${path}`);
   const res = await fetch(`${API_URL}${path}`, {
     method,
     headers,
